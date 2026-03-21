@@ -34,6 +34,11 @@ public class SecurityConfig {
                         response.setContentType("application/json");
                         response.getWriter().write("{\"error\": \"Unauthorized - Missing or invalid token\"}");
                     })
+                    .accessDeniedHandler((request, response, accessDeniedException) -> {
+                        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"Forbidden - You do not have permission\"}");
+                    })
             )
             .authorizeHttpRequests(auth -> auth
             	.requestMatchers("/api/public/**").permitAll()
