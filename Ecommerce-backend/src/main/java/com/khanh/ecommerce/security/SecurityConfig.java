@@ -28,6 +28,13 @@ public class SecurityConfig {
             .sessionManagement(session -> 
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
+            .exceptionHandling(ex -> ex
+                    .authenticationEntryPoint((request, response, authException) -> {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        response.setContentType("application/json");
+                        response.getWriter().write("{\"error\": \"Unauthorized - Missing or invalid token\"}");
+                    })
+            )
             .authorizeHttpRequests(auth -> auth
             	.requestMatchers("/api/public/**").permitAll()
             	.requestMatchers("/api/admin/**").hasRole("ADMIN")
