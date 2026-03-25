@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import com.khanh.ecommerce.DTO.*;
 import com.khanh.ecommerce.service.CartService;
 
 @RestController
@@ -17,10 +16,10 @@ public class CartController {
 
     @PostMapping("/user/cart/add")
     /**
-	{
-	  "variantProductId": x,
-	  "quantity": x
-	}
+     * {
+     * "variantProductId": x,
+     * "quantity": x
+     * }
      */
     public CartResponseDTO addToCart(@RequestBody AddToCartRequest request, Authentication authentication) {
         String username = authentication.getName();

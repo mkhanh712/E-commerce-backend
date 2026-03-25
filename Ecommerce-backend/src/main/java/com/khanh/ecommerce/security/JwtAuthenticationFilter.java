@@ -23,15 +23,15 @@ import java.util.stream.Collectors;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
-    
+
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, 
-                                    HttpServletResponse response, 
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
@@ -41,14 +41,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 List<SimpleGrantedAuthority> authorities = roles.stream()
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-//                User user = userRepository.findByUsername(username).orElse(null);
-//                if(user != null) {
-//                	List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
-//                		.map(role -> new SimpleGrantedAuthority(role.getName()))
-//                		.collect(Collectors.toList());
-                
-                UsernamePasswordAuthenticationToken authentication = 
-                    new UsernamePasswordAuthenticationToken(username, null, authorities);               
+                // User user = userRepository.findByUsername(username).orElse(null);
+                // if(user != null) {
+                // List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
+                // .map(role -> new SimpleGrantedAuthority(role.getName()))
+                // .collect(Collectors.toList());
+
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username,
+                        null, authorities);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write("{\"error\": \"Invalid or expired JWT Token\"}");
-            return; 
+            return;
         } catch (Exception ex) {
             logger.error("Error processing JWT authentication", ex);
         }

@@ -1,7 +1,9 @@
 package com.khanh.ecommerce.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,5 +34,15 @@ public class GlobalExceptionHandler {
         errorResponse.put("message", ex.getMessage());
         
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationException(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult()
+                .getFieldError()
+                .getDefaultMessage();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(errorMessage);
     }
 }
